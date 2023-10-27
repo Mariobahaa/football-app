@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Fixture } from './models/fixture.model';
+import { Router } from '@angular/router';
+import { StandingsService } from '../standings/services/standings.service';
 
 @Component({
   selector: 'app-fixtures',
@@ -24,7 +26,7 @@ export class FixturesComponent {
     goals: {
       home: 0,
       away: 1
-      },
+    },
   },
   {
     teams: {
@@ -43,8 +45,14 @@ export class FixturesComponent {
     goals: {
       home: 0,
       away: 1
-      },
+    },
   }
 
-];
+  ];
+
+  constructor(private router: Router, private standingsService: StandingsService) { }
+
+  public goBack() {
+    this.router.navigate(['/standings',  this.standingsService.lastActiveLeague]);
+  }
 }

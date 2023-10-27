@@ -3,6 +3,7 @@ import { CacheService } from '../core/services/cache.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Constants } from '../core/constants';
+import { StandingsService } from './services/standings.service';
 
 @Component({
   selector: 'app-standings',
@@ -15,13 +16,13 @@ export class StandingsComponent implements OnInit {
   public leagues!: Array<Object>;
   private subs: Subscription = new Subscription();
   public activeLeagueId!: number;
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute, private standingsService: StandingsService) {
   }
  
   ngOnInit(): void {
     this.subs.add(this.activatedRoute.params.subscribe(params => {
-      let country: string = params?.['country'];
-      this.activeLeagueId = Constants.leagues?.[country];
+      let country: string = this.standingsService.lastActiveLeague = params?.['country'];
+      this.activeLeagueId =  Constants.leagues?.[country];
     }));
   }
 

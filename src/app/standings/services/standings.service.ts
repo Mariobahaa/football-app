@@ -9,6 +9,14 @@ import { Observable, map } from 'rxjs';
 })
 export class StandingsService {
 
+  private _lastActiveLeague!: string;
+  
+  public get lastActiveLeague(): string {
+    return this._lastActiveLeague;
+  }
+  public set lastActiveLeague(value: string) {
+    this._lastActiveLeague = value;
+  }
   constructor(private http: HttpClient) { }
 
   getLeagueStandingsByYear(leagueId: number, year?: number): Observable<Standing[]> {
