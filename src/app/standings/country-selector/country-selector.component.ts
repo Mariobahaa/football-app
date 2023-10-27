@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Constants } from 'src/app/core/constants';
@@ -8,23 +8,10 @@ import { Constants } from 'src/app/core/constants';
   templateUrl: './country-selector.component.html',
   styleUrls: ['./country-selector.component.scss']
 })
-export class CountrySelectorComponent implements OnInit {
+export class CountrySelectorComponent{
 
-  public leagues!: Array<Object>;
-  private subs: Subscription = new Subscription();
-  public activeLeagueId!: number;
-  constructor(private activatedRoute: ActivatedRoute) {
+  public leagues!: Array<string>;
+  constructor() {
     this.leagues = Object.keys(Constants.leagues);
   }
-  ngOnInit(): void {
-    this.subs.add(this.activatedRoute.params.subscribe(params => {
-      let country: string = params?.['country'];
-      this.activeLeagueId = Constants.leagues?.[country];
-    }));
-  }
-
-  setActiveLeague(){
-    
-  }
-
 }
