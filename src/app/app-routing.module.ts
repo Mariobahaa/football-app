@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: `standings/${Constants.defaultLeagueId}`
+    redirectTo: `standings/${Constants.defaultLeague}`
   },
 
  
