@@ -2,14 +2,12 @@ import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { Standing } from '../models/standing.model';
 import { StandingsService } from '../services/standings.service';
 import { Subscription, tap } from 'rxjs';
-import { mapToCanActivate } from '@angular/router';
-
 @Component({
   selector: 'app-standings-table',
   templateUrl: './standings-table.component.html',
   styleUrls: ['./standings-table.component.scss']
 })
-export class StandingsTableComponent implements OnInit, OnChanges, OnDestroy {
+export class StandingsTableComponent implements OnChanges, OnDestroy {
   @Input() leagueId!: number;
   public data: Array<Standing> = [];
   // public dt = [
@@ -37,19 +35,14 @@ export class StandingsTableComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(): void {
     this.loading = true;
     this.subs.add(this.standingsService.getLeagueStandingsByYear(this.leagueId).subscribe({
-      next: (res: Standing[]) => {this.data = [...res];  this.loading = false;  console.log(this.data)},
+      next: (res: Standing[]) => { this.data = [...res]; this.loading = false; console.log(this.data) },
       error: (err) => { console.error(err); this.loading = false },
     }));
   }
 
 
-ngOnInit(): void {
-
-}
-
-
-ngOnDestroy(): void {
-  throw new Error('Method not implemented.');
-}
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
 
 }

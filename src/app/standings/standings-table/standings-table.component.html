@@ -16,7 +16,7 @@
         <tr>
             <td>{{ standing?.rank }}</td>
             <td><img [src]="standing?.team?.logo" alt="team-logo" style="width: 24px; height: 24px;" /></td>
-            <td>{{ standing?.team?.name}}</td>
+            <td><a [routerLink]="['/fixtures',standing?.team?.id]">{{ standing?.team?.name}}</a></td>
             <td>{{ standing?.all?.played }}</td>
             <td>{{ standing?.all?.win}}</td>
             <td>{{ standing?.all?.draw}}</td>
