@@ -14,4 +14,6 @@ export class Constants{
         "Germany": 78,
         "Italy": 135
     };
+
+    static readonly numberOfFixtures: number = 10;
 }

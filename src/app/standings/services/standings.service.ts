@@ -9,7 +9,7 @@ import { Observable, map } from 'rxjs';
 })
 export class StandingsService {
 
-  private _lastActiveLeague!: string;
+  private _lastActiveLeague: string = Constants.defaultLeague;
   
   public get lastActiveLeague(): string {
     return this._lastActiveLeague;
@@ -41,14 +41,5 @@ export class StandingsService {
     return (json?.response?.[0]?.league?.standings?.[0] || [])as Array<Standing>;
   }
 
-}
-
-
-function delay(arg0: number): import("rxjs").OperatorFunction<Standing[], unknown> {
-  throw new Error('Function not implemented.');
-}
-
-function take(arg0: number): import("rxjs").OperatorFunction<unknown, any> {
-  throw new Error('Function not implemented.');
 }
 

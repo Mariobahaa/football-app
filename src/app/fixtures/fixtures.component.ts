@@ -1,58 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Fixture } from './models/fixture.model';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StandingsService } from '../standings/services/standings.service';
+import { FixturesService } from './services/fixtures.service';
 
 @Component({
   selector: 'app-fixtures',
   templateUrl: './fixtures.component.html',
   styleUrls: ['./fixtures.component.scss']
 })
-export class FixturesComponent {
-  public fixtures: Array<Fixture> = [{
-    teams: {
-      home: {
-        id: 967,
-        name: "Rapide Oued ZEM",
-        logo: "https://media.api-sports.io/football/teams/967.png",
+export class FixturesComponent implements OnInit {
+  private teamId!: number;
+  public fixtures: Array<Fixture> = [];
 
-      },
-      away: {
-        id: 968,
-        name: "Wydad AC",
-        logo: "https://media.api-sports.io/football/teams/968.png",
-      }
-    },
-    goals: {
-      home: 0,
-      away: 1
-    },
-  },
-  {
-    teams: {
-      home: {
-        id: 967,
-        name: "Rapide Oued ZEM",
-        logo: "https://media.api-sports.io/football/teams/967.png",
 
-      },
-      away: {
-        id: 968,
-        name: "Wydad AC",
-        logo: "https://media.api-sports.io/football/teams/968.png",
-      }
-    },
-    goals: {
-      home: 0,
-      away: 1
-    },
+  constructor(private router: Router, private standingsService: StandingsService, private fixturesService: FixturesService,
+    activatedRoute: ActivatedRoute) {
+    this.teamId = activatedRoute.snapshot.params?.['team'];
   }
 
-  ];
-
-  constructor(private router: Router, private standingsService: StandingsService) { }
-
+  ngOnInit(): void {
+    if (this.teamId)
+      this.fixturesService.getLastFixtures(this.teamId).subscribe({
+        next: (data: Array<Fixture>) => this.fixtures = data,
+        error: (err: Error) => { console.error(err) }
+      });
+  }
   public goBack() {
-    this.router.navigate(['/standings',  this.standingsService.lastActiveLeague]);
+    this.router.navigate(['/standings', this.standingsService.lastActiveLeague]);
   }
 }
