@@ -36,3 +36,11 @@ export class StandingsService {
 }
 
 
+function delay(arg0: number): import("rxjs").OperatorFunction<Standing[], unknown> {
+  throw new Error('Function not implemented.');
+}
+
+function take(arg0: number): import("rxjs").OperatorFunction<unknown, any> {
+  throw new Error('Function not implemented.');
+}
+
