@@ -7,6 +7,7 @@ import { StandingsTableComponent } from './standings-table/standings-table.compo
 import { StandingsComponent } from './standings.component';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
+import { TableModule } from 'primeng/table';
 
 const components = [
   StandingsComponent,
@@ -20,9 +21,8 @@ const components = [
     CommonModule,
     StandingsRoutingModule,
     ButtonModule,
-    ToolbarModule
-   
-    
+    ToolbarModule,
+    TableModule
   ]
 })
 export class StandingsModule { }
