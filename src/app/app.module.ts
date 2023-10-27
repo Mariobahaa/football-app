@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { FixturesModule } from './fixtures/fixtures.module';
 import { StandingsModule } from './standings/standings.module';
 import {HttpClientModule} from '@angular/common/http';
+import { ButtonModule } from 'primeng/button';
+import { ToolbarModule } from 'primeng/toolbar';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import {HttpClientModule} from '@angular/common/http';
     FixturesModule,
     StandingsModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    ButtonModule,
+    ToolbarModule
    
   ],
   providers: [],

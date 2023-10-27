@@ -1,1 +1,7 @@
-<p>country-selector works!</p>
+<p-toolbar>
+        <div class="p-toolbar-group-center" *ngFor="let league of leagues" [routerLinkActive]="'active'">
+            <p-button label={{league}} icon="pi pi-upload" styleClass="p-button-info" 
+            [routerLink]="['/standings', league]"
+            ></p-button>
+        </div>
+</p-toolbar>
