@@ -1,11 +1,11 @@
 export class Constants{
     static readonly defaultLeague: string= "England";
     static readonly apiKey: string= "976620c20c96e2bcad0ed14bf78f4375";
-    static readonly baseURL: string=  "https://media.api-sports.io/football/";
+    static readonly baseURL: string=  "https://v3.football.api-sports.io/";
     static readonly host: string = 'v3.football.api-sports.io';
-    readonly apiHeaders = {
+    static readonly apiHeaders = {
         'x-rapidapi-host': Constants.host,
-        'x-rapidapi-key': Constants.baseURL
+        'x-rapidapi-key': Constants.apiKey
     }
     static readonly leagues: {[key:string]: number}= {
         "England": 39,

@@ -1,6 +1,6 @@
-export class Games {
-    played: number = 0;
-    win: number = 0;
-    draw: number = 0;
-    lose: number = 0;
+export interface Games {
+    played: number;
+    win: number;
+    draw: number;
+    lose: number;
 }

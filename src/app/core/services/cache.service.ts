@@ -33,12 +33,12 @@ export class CacheService {
     this.setCacheData(cacheData);
   }
 
-  private getCacheData(): { [key: string]: { data: any; expiry: number } } {
+  private getCacheData(): { [key: string]: { data: Object; expiry: number } } {
     const data = localStorage.getItem(this.localStorageKey);
     return data ? JSON.parse(data) : {};
   }
 
-  private setCacheData(cacheData: { [key: string]: { data: any; expiry: number } }) {
+  private setCacheData(cacheData: { [key: string]: { data: Object; expiry: number } }) {
     localStorage.setItem(this.localStorageKey, JSON.stringify(cacheData));
   }
 }

@@ -1,5 +1,8 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { Standing } from '../models/standing.model';
+import { StandingsService } from '../services/standings.service';
+import { Subscription, tap } from 'rxjs';
+import { mapToCanActivate } from '@angular/router';
 
 @Component({
   selector: 'app-standings-table',
@@ -9,7 +12,7 @@ import { Standing } from '../models/standing.model';
 export class StandingsTableComponent implements OnInit, OnChanges, OnDestroy {
   @Input() leagueId!: number;
   public data: Array<Standing> = [];
-  // [
+  // public dt = [
   //   {
   //   "rank": 1,
   //   "team": {
@@ -26,17 +29,27 @@ export class StandingsTableComponent implements OnInit, OnChanges, OnDestroy {
   //   }
   //   ];
   public loading = false;
+  public subs: Subscription = new Subscription();
+
+  constructor(private standingsService: StandingsService) {
+  }
 
   ngOnChanges(): void {
-      // console.log(this.leagueId);
+    this.loading = true;
+    this.subs.add(this.standingsService.getLeagueStandingsByYear(this.leagueId).subscribe({
+      next: (res: Standing[]) => {this.data = [...res];  this.loading = false;  console.log(this.data)},
+      error: (err) => { console.error(err); this.loading = false },
+    }));
   }
-  ngOnInit(): void {
- 
-  }
-  
 
-  ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
-  }
+
+ngOnInit(): void {
+
+}
+
+
+ngOnDestroy(): void {
+  throw new Error('Method not implemented.');
+}
 
 }
