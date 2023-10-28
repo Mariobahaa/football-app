@@ -42,7 +42,7 @@ export class StandingsService extends CacheConsumerService<Standing> {
       return (this.http.get<Array<Standing>>(Constants.baseURL + "standings", {
         headers: Constants.apiHeaders,
         params
-      })).pipe(map(this.mapResponseToStandings), tap((mappedStandings: Array<Standing>) => {
+      }))?.pipe(map(this.mapResponseToStandings), tap((mappedStandings: Array<Standing>) => {
         this.saveListInCache(leagueId, season, mappedStandings); //persist in cache
       }));
     }
@@ -62,7 +62,7 @@ export class StandingsService extends CacheConsumerService<Standing> {
         goalsDiff: standing.goalsDiff,
         points: standing.points
       };
-      mappedStandingsList.push(mappedStanding);
+      mappedStandingsList?.push(mappedStanding);
     })
     return mappedStandingsList;
   }

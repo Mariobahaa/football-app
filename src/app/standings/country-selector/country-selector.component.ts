@@ -10,6 +10,6 @@ export class CountrySelectorComponent{
 
   public leagues!: Array<string>;
   constructor() {
-    this.leagues = Object.keys(Constants.leagues); //list all countries/leagues
+    this.leagues = Object.keys(Constants.leagues) || []; //list all countries/leagues
   }
 }
