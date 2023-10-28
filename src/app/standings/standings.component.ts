@@ -20,14 +20,14 @@ export class StandingsComponent implements OnInit {
   }
  
   ngOnInit(): void {
-    this.subs.add(this.activatedRoute.params.subscribe(params => {
+    this.subs.add(this.activatedRoute?.params?.subscribe(params => {
       let country: string = this.standingsService.lastActiveLeague = params?.['country'] || ""; //set country and last active leage to url prama
       this.activeLeagueId =  Constants.leagues?.[country]; //get leagueId corresponding to country
     }));
   }
 
   ngOnDestroy(): void {
-    this.subs.unsubscribe();
+    this.subs?.unsubscribe();
   }
 
 }

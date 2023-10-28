@@ -19,13 +19,13 @@ export class FixturesComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private standingsService: StandingsService, private fixturesService: FixturesService,
     activatedRoute: ActivatedRoute) {
-    this.teamId = activatedRoute.snapshot.params?.['team']; //set teamId from url
+    this.teamId = activatedRoute?.snapshot?.params?.['team']; //set teamId from url
   }
 
   ngOnInit(): void {
     if (this.teamId) {
       this.loading = true;
-      this.subs.add(this.fixturesService.getLastFixtures(this.teamId).subscribe({ //get last fixtures - 10 by default (changeable)
+      this.subs.add(this.fixturesService.getLastFixtures(this.teamId)?.subscribe({ //get last fixtures - 10 by default (changeable)
         next: this.setData, //setting fixtures to response data (cahce/api)
         error: this.onError //handle failures
       }));
@@ -33,13 +33,15 @@ export class FixturesComponent implements OnInit, OnDestroy {
   }
 
   public goBack() {
-    this.router.navigate(['/standings', this.standingsService.lastActiveLeague]); //go to last opened or default league
+    this.router.navigate(['/standings', this.standingsService?.lastActiveLeague]); //go to last opened or default league
   }
 
   //set data to response value
   private setData = (data: Array<Fixture>) => {
-    if (data) {
+    if (data && data.length > 0) {
       this.fixtures = [...data];
+    }else {
+      this.fixtures = [];
     }
     this.loading = false
   }
@@ -48,7 +50,7 @@ export class FixturesComponent implements OnInit, OnDestroy {
   private onError = (err: Error) => { this.loading = false; console.error(err); }
 
   ngOnDestroy(): void {
-    this.subs.unsubscribe();
+    this.subs?.unsubscribe();
   }
 
 }

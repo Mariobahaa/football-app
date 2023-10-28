@@ -68,7 +68,7 @@ export class StandingsTableComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subs.unsubscribe();
+    this.subs?.unsubscribe();
   }
 
 }
