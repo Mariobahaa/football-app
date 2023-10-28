@@ -1,0 +1,17 @@
+<div class="results-container" *ngIf="fixtures && fixtures.length>0 && !loading; else loadingTemp">
+    <div *ngFor="let fixture of fixtures" class="result">
+        <div><img [src]="fixture?.teams?.home?.logo" alt="home-logo" /></div>
+        <div>{{fixture?.teams?.home?.name}}</div>
+        <div>{{fixture?.goals?.home}}</div>
+        <div> - </div>
+        <div>{{fixture?.goals?.away}}</div>
+        <div>{{fixture?.teams?.away?.name}}</div>
+        <div><img [src]="fixture?.teams?.away?.logo" alt="away-logo" /></div>
+    </div>
+</div>
+<div class="back" *ngIf="!loading">
+    <button pButton label="Back To League" styleClass="p-button-info" (click)="goBack()" id="back"></button>
+</div>
+<ng-template #loadingTemp>
+    ...Loading
+</ng-template>

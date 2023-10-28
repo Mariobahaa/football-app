@@ -1,0 +1,7 @@
+<p-toolbar>
+        <div class="p-toolbar-group-center" *ngFor="let league of leagues" [routerLinkActive]="'active'">
+            <button pButton label={{league}}  styleClass="p-button-info" 
+            [routerLink]="['/standings', league]" [id]= "(league | lowercase)+'Select'"
+            ></button>
+        </div>
+</p-toolbar>

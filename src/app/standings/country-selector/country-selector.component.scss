@@ -1,0 +1,13 @@
+ :host::ng-deep {
+    div.p-toolbar{
+        justify-content: center !important;
+    }
+
+    .active{
+        button{
+            background-color:var(--green-500) !important;
+        }
+    
+    }
+ }
+
