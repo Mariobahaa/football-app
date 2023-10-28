@@ -1,4 +1,5 @@
-<p-table *ngIf="data && data.length!>0 && !loading; else loadingTemp" [value]="data" [tableStyle]="{ 'min-width': '50rem' }">
+<p-table *ngIf="data && data.length!>0 && !loading; else loadingTemp" [value]="data"
+    [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template pTemplate="header">
         <tr>
             <th> </th>
@@ -13,10 +14,10 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-standing>
-        <tr>
+        <tr [routerLink]="['/fixtures',standing?.team?.id]" class="standing">
             <td>{{ standing?.rank }}</td>
             <td><img [src]="standing?.team?.logo" alt="team-logo" style="width: 24px; height: 24px;" /></td>
-            <td><a [routerLink]="['/fixtures',standing?.team?.id]">{{ standing?.team?.name}}</a></td>
+            <td><a>{{ standing?.team?.name}}</a></td>
             <td>{{ standing?.all?.played }}</td>
             <td>{{ standing?.all?.win}}</td>
             <td>{{ standing?.all?.draw}}</td>

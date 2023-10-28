@@ -27,13 +27,13 @@ export class StandingsService extends CacheConsumerService<Standing> {
 
   getLeagueStandingsByYear(leagueId: number, year?: number): Observable<Standing[]> {
     let season: number;
-    season = year ? year : this.utils.getCurrentYear();
+    season = year ? year : this.utils.getCurrentYear(); //if year is not specified set as current year
 
-    const standings = this.getListFromCache(leagueId, season);
+    const standings = this.getListFromCache(leagueId, season); //get from cache
     if (standings && this.utils.isNotEmptyObject(standings) && this.utils.isNotEmptyArray(standings)) {
       return of(standings);
     }
-    else {
+    else { // get from http if not in cache
       const params = new HttpParams()
         .set('league', leagueId)
         .set('season', season);
@@ -43,12 +43,13 @@ export class StandingsService extends CacheConsumerService<Standing> {
         headers: Constants.apiHeaders,
         params
       })).pipe(map(this.mapResponseToStandings), tap((mappedStandings: Array<Standing>) => {
-        this.saveListInCache(leagueId, season, mappedStandings);
+        this.saveListInCache(leagueId, season, mappedStandings); //persist in cache
       }));
     }
   }
 
-  private mapResponseToStandings(json: any): Array<Standing> {
+  //map api response to app model
+  private mapResponseToStandings(json: any): Array<Standing> { 
     let mappedStandingsList: Array<Standing> = new Array<Standing>()
 
     const standingsList = json?.response?.[0]?.league?.standings?.[0];

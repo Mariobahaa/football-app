@@ -1,6 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Component} from '@angular/core';
 import { Constants } from 'src/app/core/constants';
 
 @Component({
@@ -12,6 +10,6 @@ export class CountrySelectorComponent{
 
   public leagues!: Array<string>;
   constructor() {
-    this.leagues = Object.keys(Constants.leagues);
+    this.leagues = Object.keys(Constants.leagues); //list all countries/leagues
   }
 }

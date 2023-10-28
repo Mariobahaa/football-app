@@ -25,37 +25,43 @@ export class StandingsTableComponent implements OnChanges, OnDestroy {
     this.handleFailureToFetchData();
   }
 
-
+  //get league standings
   private getStandingsData() {
     this.subs.add(this.standingsService.getLeagueStandingsByYear(this.leagueId).subscribe({
       next: (data) => {
         if (data && data.length > 0) {
           this.setData(data);
         } else {
-          this.failedToFetchData.next(true);
+          this.failedToFetchData.next(true); //trigger failure to fetch handling
         }
       },
       error: (err) => {
         this.onError(err);
-        this.failedToFetchData.next(true);
+        this.failedToFetchData.next(true); //trigger failure to fetch handling
       },
     }));
   }
 
+  //on failure to fetch data for current year try previous year since season may have not started
   private handleFailureToFetchData() {
     this.subs.add(this.failedToFetchData.asObservable().pipe(switchMap(() => {
       let year = this.utils.getCurrentYear() - 1;
-      return this.standingsService.getLeagueStandingsByYear(this.leagueId, year);
+      return this.standingsService.getLeagueStandingsByYear(this.leagueId, year); //fetch last year's standings
     })).subscribe({
       next: this.setData,
       error: this.onError
     }))
   }
 
-  private setData = (res: Standing[]) => {
-    this.data = [...res];
+  //set data to response value
+  private setData = (data: Array<Standing>) => {
+    if(data){
+      this.data = [...data];
+    }
     this.loading = false;
   };
+
+  //handling errors
   private onError = (err: Error) => {
     console.error(err);
     this.loading = false
