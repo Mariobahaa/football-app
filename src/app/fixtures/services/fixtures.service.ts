@@ -39,10 +39,10 @@ export class FixturesService extends CacheConsumerService<Fixture> {
 
   }
 
-  private mapResponseToFeautres(response: any): Array<Fixture> {
+  private mapResponseToFeautres(data: any): Array<Fixture> {
     let mappedArray = new Array<Fixture>();
-    if (response) {
-      response.response.forEach((fixture: any) => {
+    if (data) {
+      data?.response?.forEach((fixture: any) => {
         const mappedFixture: Fixture = { teams: fixture.teams, goals: fixture.goals };
         mappedArray.push(mappedFixture);
       });

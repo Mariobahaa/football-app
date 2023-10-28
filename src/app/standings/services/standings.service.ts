@@ -53,7 +53,7 @@ export class StandingsService extends CacheConsumerService<Standing> {
     let mappedStandingsList: Array<Standing> = new Array<Standing>()
 
     const standingsList = json?.response?.[0]?.league?.standings?.[0];
-    standingsList.forEach((standing: Standing) => {
+    standingsList?.forEach((standing: Standing) => {
       let mappedStanding: Standing;
       mappedStanding = {
         rank: standing.rank,
