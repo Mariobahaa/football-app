@@ -29,7 +29,7 @@ export class StandingsService extends CacheConsumerService<Standing> {
     let season: number;
     season = year ? year : this.utils.getCurrentYear();
 
-    let standings = this.getListFromCache(leagueId, season);
+    const standings = this.getListFromCache(leagueId, season);
     if (standings && this.utils.isNotEmptyObject(standings) && this.utils.isNotEmptyArray(standings)) {
       return of(standings);
     }

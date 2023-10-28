@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CacheEntry } from '../models/cache-entry.model';
 
 @Injectable({
   providedIn: 'root',
@@ -18,9 +19,9 @@ export class CacheService {
     if (!cacheData[key]) {
       return null;
     }
-    const { data, expiry } = cacheData[key];
-    if (expiry === 0 || expiry >= Date.now()) {
-      return data;
+    const entry: CacheEntry = cacheData[key];
+    if (entry.expiry === 0 || entry.expiry >= Date.now()) {
+      return entry.data;
     } else {
       this.remove(key);
       return null; // Cache entry has expired
@@ -33,12 +34,12 @@ export class CacheService {
     this.setCacheData(cacheData);
   }
 
-  private getCacheData(): { [key: string]: { data: Object; expiry: number } } {
+  private getCacheData(): { [key: string]: CacheEntry } {
     const data = localStorage.getItem(this.localStorageKey);
     return data ? JSON.parse(data) : {};
   }
 
-  private setCacheData(cacheData: { [key: string]: { data: Object; expiry: number } }) {
+  private setCacheData(cacheData: { [key: string]: CacheEntry }) {
     localStorage.setItem(this.localStorageKey, JSON.stringify(cacheData));
   }
 }

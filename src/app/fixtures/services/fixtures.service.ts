@@ -18,7 +18,7 @@ export class FixturesService extends CacheConsumerService<Fixture> {
   }
 
   public getLastFixtures(teamId: number, last: number = Constants.numberOfFixtures): Observable<Fixture[]> {
-    let cachedData = this.getListFromCache(teamId, last);
+    const cachedData = this.getListFromCache(teamId, last);
     if (cachedData && this.utils.isNotEmptyObject(cachedData) && this.utils.isNotEmptyArray(cachedData)) {
       return of(cachedData);
     }
@@ -42,7 +42,7 @@ export class FixturesService extends CacheConsumerService<Fixture> {
     let mappedArray = new Array<Fixture>();
     if (response) {
       response.response.forEach((fixture: any) => {
-        let mappedFixture: Fixture = { teams: fixture.teams, goals: fixture.goals };
+        const mappedFixture: Fixture = { teams: fixture.teams, goals: fixture.goals };
         mappedArray.push(mappedFixture);
       });
     }
