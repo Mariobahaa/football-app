@@ -1,0 +1,8 @@
+:host{
+    tr.standing {
+        cursor: pointer;
+    }
+    tr.standing:hover{
+        background-color: var(--blue-50);
+    }
+}
