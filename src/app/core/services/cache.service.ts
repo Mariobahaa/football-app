@@ -13,7 +13,7 @@ export class CacheService {
     this.setCacheData(cacheData);
   }
 
-  get(key: string) {
+  get(key: string): any{
     const cacheData = this.getCacheData();
     if (!cacheData[key]) {
       return null;

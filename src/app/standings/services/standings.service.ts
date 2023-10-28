@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Constants } from 'src/app/core/constants';
 import { Standing } from '../models/standing.model';
 import { Observable, map } from 'rxjs';
+import { UtilitiesService } from 'src/app/core/services/utilities.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +18,12 @@ export class StandingsService {
   public set lastActiveLeague(value: string) {
     this._lastActiveLeague = value;
   }
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private utils: UtilitiesService) { }
 
   getLeagueStandingsByYear(leagueId: number, year?: number): Observable<Standing[]> {
     let season: number;
     if (!year) {
-      season = new Date().getFullYear();
+      season = this.utils.getCurrentYear();
     } else {
       season = year;
     }

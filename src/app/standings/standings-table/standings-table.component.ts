@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { Standing } from '../models/standing.model';
 import { StandingsService } from '../services/standings.service';
 import { Observable, Subject, Subscription, switchMap, tap } from 'rxjs';
+import { UtilitiesService } from 'src/app/core/services/utilities.service';
 @Component({
   selector: 'app-standings-table',
   templateUrl: './standings-table.component.html',
@@ -14,7 +15,7 @@ export class StandingsTableComponent implements OnChanges, OnDestroy {
   public loading = false;
   public subs: Subscription = new Subscription();
 
-  constructor(private standingsService: StandingsService) {
+  constructor(private standingsService: StandingsService, private utils: UtilitiesService) {
   }
 
   ngOnChanges(): void {
@@ -43,7 +44,7 @@ export class StandingsTableComponent implements OnChanges, OnDestroy {
 
   private handleFailureToFetchData() {
     this.subs.add(this.failedToFetchData.asObservable().pipe(switchMap(() => {
-      let year = new Date().getFullYear() - 1;
+      let year = this.utils.getCurrentYear() - 1;
       return this.standingsService.getLeagueStandingsByYear(this.leagueId, year);
     })).subscribe({
       next: this.setData,
@@ -54,7 +55,6 @@ export class StandingsTableComponent implements OnChanges, OnDestroy {
   private setData = (res: Standing[]) => {
     this.data = [...res];
     this.loading = false;
-    console.log(this.data)
   };
   private onError = (err: Error) => {
     console.error(err);

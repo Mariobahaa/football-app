@@ -16,4 +16,5 @@ export class Constants{
     };
 
     static readonly numberOfFixtures: number = 10;
+    static readonly separator: string = "_$_"
 }
