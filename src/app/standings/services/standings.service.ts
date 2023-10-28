@@ -5,13 +5,13 @@ import { Standing } from '../models/standing.model';
 import { Observable, map, of, tap } from 'rxjs';
 import { UtilitiesService } from 'src/app/core/services/utilities.service';
 import { CacheService } from 'src/app/core/services/cache.service';
+import { CacheConsumerService } from 'src/app/core/services/cache-consumer.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StandingsService {
+export class StandingsService extends CacheConsumerService<Standing> {
 
-  private readonly cacheKey = "standings";
   private _lastActiveLeague: string = Constants.defaultLeague;
 
   public get lastActiveLeague(): string {
@@ -20,13 +20,16 @@ export class StandingsService {
   public set lastActiveLeague(value: string) {
     this._lastActiveLeague = value;
   }
-  constructor(private http: HttpClient, private cache: CacheService, private utils: UtilitiesService,) { }
+  constructor(private http: HttpClient, cache: CacheService, private utils: UtilitiesService) {
+    super(cache);
+    this.cacheKey = "standings"
+   }
 
   getLeagueStandingsByYear(leagueId: number, year?: number): Observable<Standing[]> {
     let season: number;
     season = year ? year : this.utils.getCurrentYear();
 
-    let standings = this.getFromCache(leagueId, season);
+    let standings = this.getListFromCache(leagueId, season);
     if (standings && this.utils.isNotEmptyObject(standings) && this.utils.isNotEmptyArray(standings)) {
       return of(standings);
     }
@@ -40,7 +43,7 @@ export class StandingsService {
         headers: Constants.apiHeaders,
         params
       })).pipe(map(this.mapResponseToStandings), tap((mappedStandings: Array<Standing>) => {
-        this.saveInCache(leagueId, season, mappedStandings);
+        this.saveListInCache(leagueId, season, mappedStandings);
       }));
     }
   }
@@ -49,15 +52,6 @@ export class StandingsService {
     return (json?.response?.[0]?.league?.standings?.[0] || []) as Array<Standing>;
   }
 
-  private getFromCache(leagueId: number, season: number): Array<Standing> {
-    return this.cache.get(this.constructCacheIdentifier(leagueId, season));
-  }
-
-  private saveInCache(leagueId: number, season: number, value: Array<Standing>) {
-    this.cache.set(this.constructCacheIdentifier(leagueId, season), value);
-  }
-
-  private constructCacheIdentifier = (teamId: number, last: number) => this.cacheKey + Constants.separator + teamId + Constants.separator + last;
-}
+ }
 
 

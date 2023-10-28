@@ -5,17 +5,20 @@ import { Observable, map, of, tap } from 'rxjs';
 import { Constants } from 'src/app/core/constants';
 import { CacheService } from 'src/app/core/services/cache.service';
 import { UtilitiesService } from 'src/app/core/services/utilities.service';
+import { CacheConsumerService } from 'src/app/core/services/cache-consumer.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FixturesService {
-  private readonly cacheKey = "fixtures";
+export class FixturesService extends CacheConsumerService<Fixture> {
 
-  constructor(private http: HttpClient, private cache: CacheService, private utils: UtilitiesService) { }
+  constructor(private http: HttpClient, cache: CacheService, private utils: UtilitiesService) {
+    super(cache);
+    this.cacheKey = "fixtures";
+  }
 
   public getLastFixtures(teamId: number, last: number = Constants.numberOfFixtures): Observable<Fixture[]> {
-    let cachedData = this.getFromCache(teamId, last);
+    let cachedData = this.getListFromCache(teamId, last);
     if (cachedData && this.utils.isNotEmptyObject(cachedData) && this.utils.isNotEmptyArray(cachedData)) {
       return of(cachedData);
     }
@@ -28,7 +31,7 @@ export class FixturesService {
         headers: Constants.apiHeaders, params
 
       }).pipe(map(this.mapResponseToFeautres), tap((mappedFixtures: Array<Fixture>) => {
-        this.saveInCache(teamId, last, mappedFixtures);
+        this.saveListInCache(teamId, last, mappedFixtures);
         return mappedFixtures;
       }));
     }
@@ -46,13 +49,4 @@ export class FixturesService {
     return mappedArray;
   }
 
-  private getFromCache(teamId: number, last: number): Array<Fixture> {
-    return this.cache.get(this.constructCacheIdentifier(teamId, last));
-  }
-
-  private saveInCache(teamId: number, last: number, value: Array<Fixture>) {
-    this.cache.set(this.constructCacheIdentifier(teamId, last), value);
-  }
-
-  private constructCacheIdentifier = (teamId: number, last: number) => this.cacheKey + Constants.separator + teamId + Constants.separator + last;
 }
