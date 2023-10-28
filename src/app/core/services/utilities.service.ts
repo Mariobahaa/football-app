@@ -12,11 +12,11 @@ export class UtilitiesService {
   }
 
   public isNotEmptyObject(value: any): boolean {
-    return typeof value === 'object' && Object.keys(value).length > 0;
+    return typeof value === 'object' && Object.keys(value)?.length > 0;
   }
 
   public isNotEmptyArray(value: any): boolean {
-    return Array.isArray(value) && value.length > 0;
+    return Array.isArray(value) && value?.length > 0;
   }
   
 }
