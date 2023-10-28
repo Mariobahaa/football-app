@@ -10,15 +10,15 @@ export class CacheConsumerService<T> {
   constructor(protected cache: CacheService) { }
 
   protected getListFromCache(primaryProp: number, secondaryProp: number): Array<T> {
-    return this.cache.get(this.constructCacheIdentifier(primaryProp, secondaryProp));
+    return this.cache.get(this.constructCacheIdentifier(primaryProp?.toString(), secondaryProp?.toString()));
   }
 
   protected saveListInCache(primaryProp: number, secondaryProp: number, value: Array<T>) {
-    this.cache.set(this.constructCacheIdentifier(primaryProp, secondaryProp), value);
+    this.cache.set(this.constructCacheIdentifier(primaryProp?.toString(), secondaryProp?.toString()), value);
   }
 
-  private constructCacheIdentifier = (primaryProp: number, secondaryProp: number) => {
-    return this.cacheKey! + (primaryProp ? (Constants.separator + primaryProp + (secondaryProp ? Constants.separator + secondaryProp : "")) : "");
+  private constructCacheIdentifier = (...args: string[]) => {
+    return this.cacheKey! +  (args?.length > 0? Constants.separator + args?.join(Constants.separator): "");
   }
 
 }
