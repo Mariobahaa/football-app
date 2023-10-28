@@ -23,7 +23,7 @@ export class StandingsService extends CacheConsumerService<Standing> {
   constructor(private http: HttpClient, cache: CacheService, private utils: UtilitiesService) {
     super(cache);
     this.cacheKey = "standings"
-   }
+  }
 
   getLeagueStandingsByYear(leagueId: number, year?: number): Observable<Standing[]> {
     let season: number;
@@ -49,9 +49,23 @@ export class StandingsService extends CacheConsumerService<Standing> {
   }
 
   private mapResponseToStandings(json: any): Array<Standing> {
-    return (json?.response?.[0]?.league?.standings?.[0] || []) as Array<Standing>;
+    let mappedStandingsList: Array<Standing> = new Array<Standing>()
+
+    const standingsList = json?.response?.[0]?.league?.standings?.[0];
+    standingsList.forEach((standing: Standing) => {
+      let mappedStanding: Standing;
+      mappedStanding = {
+        rank: standing.rank,
+        team: { id: standing?.team?.id, name: standing?.team?.name, logo: standing?.team?.logo },
+        all: { played: standing?.all?.played, win: standing?.all?.win, lose: standing?.all?.lose, draw: standing?.all?.draw },
+        goalsDiff: standing.goalsDiff,
+        points: standing.points
+      };
+      mappedStandingsList.push(mappedStanding);
+    })
+    return mappedStandingsList;
   }
 
- }
+}
 
 
