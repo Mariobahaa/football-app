@@ -54,8 +54,10 @@ export class StandingsTableComponent implements OnChanges, OnDestroy {
 
   //set data to response value
   private setData = (data: Array<Standing>) => {
-    if(data){
+    if(data && data.length > 0){
       this.data = [...data];
+    }else{
+      this.data = [];
     }
     this.loading = false;
   };
