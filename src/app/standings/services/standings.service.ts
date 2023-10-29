@@ -11,7 +11,7 @@ import { StandingsResponse } from '../models/standings-response.model';
 })
 export class StandingsService extends CacheConsumerService<Standing> {
 
-  private _lastActiveLeague: string = Constants.defaultLeague;
+  private _lastActiveLeague: string = "";
 
   public get lastActiveLeague(): string {
     return this._lastActiveLeague;
