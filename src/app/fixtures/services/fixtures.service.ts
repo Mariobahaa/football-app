@@ -3,24 +3,25 @@ import { Injectable } from '@angular/core';
 import { Fixture } from '../models/fixture.model';
 import { Observable, map, of, tap } from 'rxjs';
 import { Constants } from 'src/app/core/constants';
-import { CacheService } from 'src/app/core/services/cache.service';
-import { UtilitiesService } from 'src/app/core/services/utilities.service';
 import { CacheConsumerService } from 'src/app/core/services/cache-consumer.service';
+import { FixturesResponse } from '../models/fixtures-response.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FixturesService extends CacheConsumerService<Fixture> {
 
-  constructor(private http: HttpClient, cache: CacheService, private utils: UtilitiesService) {
-    super(cache);
+  constructor(private http: HttpClient) {
+    super();
     this.cacheKey = "fixtures";
   }
 
   //get last N fixtures
-  public getLastFixtures(teamId: number, last: number = Constants.numberOfFixtures): Observable<Fixture[]> {
-    const cachedData = this.getListFromCache(teamId, last); //get from cache
-    if (cachedData && this.utils.isNotEmptyObject(cachedData) && this.utils.isNotEmptyArray(cachedData)) {
+  public getLastFixtures(teamId: number, last: number = Constants.numberOfFixtures): Observable<Array<Fixture>> {
+    const cachedData: Array<Fixture> = (this.getFromCache(teamId, last) as Array<Fixture>); //get from cache
+    if (cachedData &&
+      (!(typeof cachedData === 'object' && Object.keys(cachedData)?.length == 0) && //not {}
+        !(Array.isArray(cachedData) && cachedData?.length == 0))) { //not []
       return of(cachedData);
     }
     else { // get from http if not in cache
@@ -28,21 +29,21 @@ export class FixturesService extends CacheConsumerService<Fixture> {
         .set('last', last)
         .set('team', teamId);
 
-      return this.http.get<Fixture[]>(Constants.baseURL + "fixtures", {
+      return this.http.get<FixturesResponse>(Constants.baseURL + "fixtures", {
         headers: Constants.apiHeaders, params
 
-      }).pipe(map(this.mapResponseToFeautres), tap((mappedFixtures: Array<Fixture>) => {
-        this.saveListInCache(teamId, last, mappedFixtures); //persist in cache
+      }).pipe(map((data: FixturesResponse) => this.mapResponseToFeautres(data)), tap((mappedFixtures: Array<Fixture>) => {
+        this.saveInCache(teamId, last, mappedFixtures); //persist in cache
         return mappedFixtures;
       }));
     }
 
   }
 
-  private mapResponseToFeautres(data: any): Array<Fixture> {
+  private mapResponseToFeautres(data: FixturesResponse): Array<Fixture> {
     let mappedArray = new Array<Fixture>();
     if (data) {
-      data?.response?.forEach((fixture: any) => {
+      data?.response?.forEach((fixture: Fixture) => {
         const mappedFixture: Fixture = { teams: fixture.teams, goals: fixture.goals };
         mappedArray.push(mappedFixture);
       });

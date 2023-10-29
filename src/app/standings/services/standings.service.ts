@@ -3,16 +3,15 @@ import { Injectable } from '@angular/core';
 import { Constants } from 'src/app/core/constants';
 import { Standing } from '../models/standing.model';
 import { Observable, map, of, tap } from 'rxjs';
-import { UtilitiesService } from 'src/app/core/services/utilities.service';
-import { CacheService } from 'src/app/core/services/cache.service';
 import { CacheConsumerService } from 'src/app/core/services/cache-consumer.service';
+import { StandingsResponse } from '../models/standings-response.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StandingsService extends CacheConsumerService<Standing> {
 
-  private _lastActiveLeague: string = Constants.defaultLeague;
+  private _lastActiveLeague: string = "";
 
   public get lastActiveLeague(): string {
     return this._lastActiveLeague;
@@ -20,18 +19,20 @@ export class StandingsService extends CacheConsumerService<Standing> {
   public set lastActiveLeague(value: string) {
     this._lastActiveLeague = value;
   }
-  constructor(private http: HttpClient, cache: CacheService, private utils: UtilitiesService) {
-    super(cache);
+  constructor(private http: HttpClient) {
+    super();
     this.cacheKey = "standings"
   }
 
-  getLeagueStandingsByYear(leagueId: number, year?: number): Observable<Standing[]> {
+  getLeagueStandingsByYear(leagueId: number, year?: number): Observable<Array<Standing>> {
     let season: number;
-    season = year ? year : this.utils.getCurrentYear(); //if year is not specified set as current year
+    season = year ? year : new Date().getFullYear(); //if year is not specified set as current year
 
-    const standings = this.getListFromCache(leagueId, season); //get from cache
-    if (standings && this.utils.isNotEmptyObject(standings) && this.utils.isNotEmptyArray(standings)) {
-      return of(standings);
+    const cachedData: Array<Standing> = (this.getFromCache(leagueId, season) as Array<Standing>); //get from cache
+    if (cachedData &&
+      (!(typeof cachedData === 'object' && Object.keys(cachedData)?.length == 0) && //not {}
+        !(Array.isArray(cachedData) && cachedData?.length == 0))) {
+      return of(cachedData);
     }
     else { // get from http if not in cache
       const params = new HttpParams()
@@ -39,17 +40,17 @@ export class StandingsService extends CacheConsumerService<Standing> {
         .set('season', season);
 
 
-      return (this.http.get<Array<Standing>>(Constants.baseURL + "standings", {
+      return (this.http.get<StandingsResponse>(Constants.baseURL + "standings", {
         headers: Constants.apiHeaders,
         params
-      }))?.pipe(map(this.mapResponseToStandings), tap((mappedStandings: Array<Standing>) => {
-        this.saveListInCache(leagueId, season, mappedStandings); //persist in cache
+      }))?.pipe(map((data: StandingsResponse) => this.mapResponseToStandings(data)), tap((mappedStandings: Array<Standing>) => {
+        this.saveInCache(leagueId, season, mappedStandings); //persist in cache
       }));
     }
   }
 
   //map api response to app model
-  private mapResponseToStandings(json: any): Array<Standing> { 
+  private mapResponseToStandings(json: StandingsResponse): Array<Standing> { 
     let mappedStandingsList: Array<Standing> = new Array<Standing>()
 
     const standingsList = json?.response?.[0]?.league?.standings?.[0];

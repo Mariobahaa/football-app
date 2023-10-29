@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StandingsService } from '../standings/services/standings.service';
 import { FixturesService } from './services/fixtures.service';
 import { Subscription } from 'rxjs';
+import { Location } from '@angular/common';
+
 
 @Component({
   selector: 'app-fixtures',
@@ -18,7 +20,7 @@ export class FixturesComponent implements OnInit, OnDestroy {
 
 
   constructor(private router: Router, private standingsService: StandingsService, private fixturesService: FixturesService,
-    activatedRoute: ActivatedRoute) {
+    activatedRoute: ActivatedRoute, private location: Location) {
     this.teamId = activatedRoute?.snapshot?.params?.['team']; //set teamId from url
   }
 
@@ -33,14 +35,18 @@ export class FixturesComponent implements OnInit, OnDestroy {
   }
 
   public goBack() {
-    this.router.navigate(['/standings', this.standingsService?.lastActiveLeague]); //go to last opened or default league
+    if (this.standingsService?.lastActiveLeague) { //if there is a last active league
+      this.router.navigate(['/standings', this.standingsService?.lastActiveLeague]); //go to last opened league
+    }else{
+      this.location.back(); // simulate browser's back button click
+    }
   }
 
   //set data to response value
   private setData = (data: Array<Fixture>) => {
     if (data && data.length > 0) {
       this.fixtures = [...data];
-    }else {
+    } else {
       this.fixtures = [];
     }
     this.loading = false

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CacheService } from '../core/services/cache.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Constants } from '../core/constants';
@@ -13,7 +12,7 @@ import { StandingsService } from './services/standings.service';
 export class StandingsComponent implements OnInit {
 
   
-  public leagues!: Array<Object>;
+  public leagues!: Array<{[key:string]: number}>;
   private subs: Subscription = new Subscription();
   public activeLeagueId!: number;
   constructor(private activatedRoute: ActivatedRoute, private standingsService: StandingsService) {
