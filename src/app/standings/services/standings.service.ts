@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Constants } from 'src/app/core/constants';
 import { Standing } from '../models/standing.model';
 import { Observable, map, of, tap } from 'rxjs';
-import { UtilitiesService } from 'src/app/core/services/utilities.service';
 import { CacheConsumerService } from 'src/app/core/services/cache-consumer.service';
 import { StandingsResponse } from '../models/standings-response.model';
 
@@ -20,18 +19,20 @@ export class StandingsService extends CacheConsumerService<Standing> {
   public set lastActiveLeague(value: string) {
     this._lastActiveLeague = value;
   }
-  constructor(private http: HttpClient, private utils: UtilitiesService) {
+  constructor(private http: HttpClient) {
     super();
     this.cacheKey = "standings"
   }
 
   getLeagueStandingsByYear(leagueId: number, year?: number): Observable<Array<Standing>> {
     let season: number;
-    season = year ? year : this.utils.getCurrentYear(); //if year is not specified set as current year
+    season = year ? year : new Date().getFullYear(); //if year is not specified set as current year
 
-    const standings: Array<Standing> = (this.getFromCache(leagueId, season) as Array<Standing>); //get from cache
-    if (standings && this.utils.isNotEmptyObject(standings) && this.utils.isNotEmptyArray(standings)) {
-      return of(standings);
+    const cachedData: Array<Standing> = (this.getFromCache(leagueId, season) as Array<Standing>); //get from cache
+    if (cachedData &&
+      (!(typeof cachedData === 'object' && Object.keys(cachedData)?.length == 0) && //not {}
+        !(Array.isArray(cachedData) && cachedData?.length > 0))) {
+      return of(cachedData);
     }
     else { // get from http if not in cache
       const params = new HttpParams()

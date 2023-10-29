@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Fixture } from '../models/fixture.model';
 import { Observable, map, of, tap } from 'rxjs';
 import { Constants } from 'src/app/core/constants';
-import { UtilitiesService } from 'src/app/core/services/utilities.service';
 import { CacheConsumerService } from 'src/app/core/services/cache-consumer.service';
 import { FixturesResponse } from '../models/fixtures-response.model';
 
@@ -12,15 +11,17 @@ import { FixturesResponse } from '../models/fixtures-response.model';
 })
 export class FixturesService extends CacheConsumerService<Fixture> {
 
-  constructor(private http: HttpClient, private utils: UtilitiesService) {
+  constructor(private http: HttpClient) {
     super();
     this.cacheKey = "fixtures";
   }
 
   //get last N fixtures
   public getLastFixtures(teamId: number, last: number = Constants.numberOfFixtures): Observable<Array<Fixture>> {
-    const cachedData: Array<Fixture>= (this.getFromCache(teamId, last) as Array<Fixture>); //get from cache
-    if (cachedData && this.utils.isNotEmptyObject(cachedData) && this.utils.isNotEmptyArray(cachedData)) {
+    const cachedData: Array<Fixture> = (this.getFromCache(teamId, last) as Array<Fixture>); //get from cache
+    if (cachedData &&
+      (!(typeof cachedData === 'object' && Object.keys(cachedData)?.length == 0) && //not {}
+        !(Array.isArray(cachedData) && cachedData?.length > 0))) { //not []
       return of(cachedData);
     }
     else { // get from http if not in cache
@@ -31,7 +32,7 @@ export class FixturesService extends CacheConsumerService<Fixture> {
       return this.http.get<FixturesResponse>(Constants.baseURL + "fixtures", {
         headers: Constants.apiHeaders, params
 
-      }).pipe(map((data: FixturesResponse)=> this.mapResponseToFeautres(data)), tap((mappedFixtures: Array<Fixture>) => {
+      }).pipe(map((data: FixturesResponse) => this.mapResponseToFeautres(data)), tap((mappedFixtures: Array<Fixture>) => {
         this.saveInCache(teamId, last, mappedFixtures); //persist in cache
         return mappedFixtures;
       }));
