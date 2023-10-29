@@ -5,6 +5,7 @@ import { Observable, map, of, tap } from 'rxjs';
 import { Constants } from 'src/app/core/constants';
 import { UtilitiesService } from 'src/app/core/services/utilities.service';
 import { CacheConsumerService } from 'src/app/core/services/cache-consumer.service';
+import { FixturesResponse } from '../models/fixtures-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +28,10 @@ export class FixturesService extends CacheConsumerService<Fixture> {
         .set('last', last)
         .set('team', teamId);
 
-      return this.http.get<Fixture[]>(Constants.baseURL + "fixtures", {
+      return this.http.get<FixturesResponse>(Constants.baseURL + "fixtures", {
         headers: Constants.apiHeaders, params
 
-      }).pipe(map(this.mapResponseToFeautres), tap((mappedFixtures: Array<Fixture>) => {
+      }).pipe(map((data: FixturesResponse)=> this.mapResponseToFeautres(data)), tap((mappedFixtures: Array<Fixture>) => {
         this.saveInCache(teamId, last, mappedFixtures); //persist in cache
         return mappedFixtures;
       }));
@@ -38,10 +39,10 @@ export class FixturesService extends CacheConsumerService<Fixture> {
 
   }
 
-  private mapResponseToFeautres(data: any): Array<Fixture> {
+  private mapResponseToFeautres(data: FixturesResponse): Array<Fixture> {
     let mappedArray = new Array<Fixture>();
     if (data) {
-      data?.response?.forEach((fixture: any) => {
+      data?.response?.forEach((fixture: Fixture) => {
         const mappedFixture: Fixture = { teams: fixture.teams, goals: fixture.goals };
         mappedArray.push(mappedFixture);
       });

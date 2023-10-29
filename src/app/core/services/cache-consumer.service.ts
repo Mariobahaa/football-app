@@ -44,7 +44,7 @@ export class CacheConsumerService<T> {
 
   private set(key: string, value: T | Array<T>, expirationMs: number = 3600000) { //setting default expiry to 1 hour
     const cacheData = this.getCacheData();
-    const expiry = expirationMs > 0 ? Date.now() + expirationMs : 0;
+    const expiry = expirationMs > 0 ? Date.now() + expirationMs : 0; //zero means that it doesn't expire
     cacheData[key] = { data: value, expiry };
     this.setCacheData(cacheData);
   }
