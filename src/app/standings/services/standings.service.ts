@@ -31,7 +31,7 @@ export class StandingsService extends CacheConsumerService<Standing> {
     const cachedData: Array<Standing> = (this.getFromCache(leagueId, season) as Array<Standing>); //get from cache
     if (cachedData &&
       (!(typeof cachedData === 'object' && Object.keys(cachedData)?.length == 0) && //not {}
-        !(Array.isArray(cachedData) && cachedData?.length > 0))) {
+        !(Array.isArray(cachedData) && cachedData?.length == 0))) {
       return of(cachedData);
     }
     else { // get from http if not in cache

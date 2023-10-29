@@ -21,7 +21,7 @@ export class FixturesService extends CacheConsumerService<Fixture> {
     const cachedData: Array<Fixture> = (this.getFromCache(teamId, last) as Array<Fixture>); //get from cache
     if (cachedData &&
       (!(typeof cachedData === 'object' && Object.keys(cachedData)?.length == 0) && //not {}
-        !(Array.isArray(cachedData) && cachedData?.length > 0))) { //not []
+        !(Array.isArray(cachedData) && cachedData?.length == 0))) { //not []
       return of(cachedData);
     }
     else { // get from http if not in cache
