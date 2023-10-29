@@ -5,6 +5,7 @@ import { Standing } from '../models/standing.model';
 import { Observable, map, of, tap } from 'rxjs';
 import { UtilitiesService } from 'src/app/core/services/utilities.service';
 import { CacheConsumerService } from 'src/app/core/services/cache-consumer.service';
+import { StandingsResponse } from '../models/standings-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -38,17 +39,17 @@ export class StandingsService extends CacheConsumerService<Standing> {
         .set('season', season);
 
 
-      return (this.http.get<Array<Standing>>(Constants.baseURL + "standings", {
+      return (this.http.get<StandingsResponse>(Constants.baseURL + "standings", {
         headers: Constants.apiHeaders,
         params
-      }))?.pipe(map(this.mapResponseToStandings), tap((mappedStandings: Array<Standing>) => {
+      }))?.pipe(map((data: StandingsResponse) => this.mapResponseToStandings(data)), tap((mappedStandings: Array<Standing>) => {
         this.saveInCache(leagueId, season, mappedStandings); //persist in cache
       }));
     }
   }
 
   //map api response to app model
-  private mapResponseToStandings(json: any): Array<Standing> { 
+  private mapResponseToStandings(json: StandingsResponse): Array<Standing> { 
     let mappedStandingsList: Array<Standing> = new Array<Standing>()
 
     const standingsList = json?.response?.[0]?.league?.standings?.[0];
