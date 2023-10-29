@@ -4,7 +4,6 @@ import { Constants } from 'src/app/core/constants';
 import { Standing } from '../models/standing.model';
 import { Observable, map, of, tap } from 'rxjs';
 import { UtilitiesService } from 'src/app/core/services/utilities.service';
-import { CacheService } from 'src/app/core/services/cache.service';
 import { CacheConsumerService } from 'src/app/core/services/cache-consumer.service';
 
 @Injectable({
@@ -20,16 +19,16 @@ export class StandingsService extends CacheConsumerService<Standing> {
   public set lastActiveLeague(value: string) {
     this._lastActiveLeague = value;
   }
-  constructor(private http: HttpClient, cache: CacheService, private utils: UtilitiesService) {
-    super(cache);
+  constructor(private http: HttpClient, private utils: UtilitiesService) {
+    super();
     this.cacheKey = "standings"
   }
 
-  getLeagueStandingsByYear(leagueId: number, year?: number): Observable<Standing[]> {
+  getLeagueStandingsByYear(leagueId: number, year?: number): Observable<Array<Standing>> {
     let season: number;
     season = year ? year : this.utils.getCurrentYear(); //if year is not specified set as current year
 
-    const standings = this.getListFromCache(leagueId, season); //get from cache
+    const standings: Array<Standing> = (this.getFromCache(leagueId, season) as Array<Standing>); //get from cache
     if (standings && this.utils.isNotEmptyObject(standings) && this.utils.isNotEmptyArray(standings)) {
       return of(standings);
     }
@@ -43,7 +42,7 @@ export class StandingsService extends CacheConsumerService<Standing> {
         headers: Constants.apiHeaders,
         params
       }))?.pipe(map(this.mapResponseToStandings), tap((mappedStandings: Array<Standing>) => {
-        this.saveListInCache(leagueId, season, mappedStandings); //persist in cache
+        this.saveInCache(leagueId, season, mappedStandings); //persist in cache
       }));
     }
   }

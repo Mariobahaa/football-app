@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CacheService } from '../core/services/cache.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Constants } from '../core/constants';
